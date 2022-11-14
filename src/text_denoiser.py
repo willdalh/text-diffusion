@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
+import numpy as np
+from tqdm import tqdm
 
 from torchtext.datasets import WikiText2
 from torchtext.vocab import build_vocab_from_iterator
@@ -26,23 +28,18 @@ class TextDenoiser(nn.Module):
         self.vocab = vocab
         data = [torch.LongTensor([vocab(tokenizer(item))]) for item in train_iter]
         data = tuple(filter(lambda x: x.numel() > 0, data))
-        data = torch.cat(data, dim=0)
-        dataset = TextDataset(data, seq_len=32)
+        data = torch.cat(data, dim=1).squeeze(0)
+        dataset = TextDataset(data, seq_len=64)
         self.dataloader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=4)
 
-
+        self.embed_dim = embed_dim
         self.embedder = nn.Embedding(len(vocab), embed_dim)
         # self.model = nn.Transformer(d_model=embed_dim, nhead=12, num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=3072, dropout=0.1, activation='gelu')s
-        self.model = nn.Sequential(
-            nn.Linear(embed_dim, 3072),
-            nn.GELU(),
-            nn.Linear(3072, 3072),
-            nn.GELU(),
-            nn.Linear(3072, embed_dim),
-            nn.GELU())
+        self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=12, dim_feedforward=3072, dropout=0.1, activation='gelu'), num_layers=6)
         self.decoder = nn.Linear(embed_dim, len(vocab))
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
+        # self.to()
         
         
     def _get_schedule(self, beta_start: float, beta_end: float, n_T: int):
@@ -74,17 +71,54 @@ class TextDenoiser(nn.Module):
     def forward_process(self, x):
         x_emb = self.embedder(x)
 
-        ts = torch.randint(1, self.n_T, x.shape[0]).to(x.device) # TODO CHECK SHAPE FOR SEQ_LEN
+        ts = torch.randint(1, self.n_T, (x.shape[0],)).to(x.device) # TODO CHECK SHAPE FOR SEQ_LEN
         eps = self.model(x_emb)
         x_t = self.sqrt_alphabar[ts, None, None] * x_emb + self.sqrt_m_alphabar[ts, None, None] * eps
         pred_eps = self.model(x_t)
         noise_loss = self.criterion(eps, pred_eps)
 
         y = self.decoder(x_emb)
-        y = F.log_softmax(y, dim=-1)
-        reconstruction_loss = F.cross_entropy(y, x, reduction="none").mean()
+        y = F.log_softmax(y, dim=-1).permute(0, 2, 1)
+        reconstruction_loss = F.cross_entropy(y, x)
         loss = noise_loss + reconstruction_loss
-        return x_t, loss
+        return loss
+
+    def sample_step(self, x, t):
+        z = torch.randn_like(x).to(x.device) if t > 1 else 0
+        tt = torch.LongTensor([t] * x.shape[1]).to(x.device)
+        eps = self.model(x, tt)
+        x = self.oneover_sqrt_alpha[t] * (x - eps * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t]
+        return x
+
+    def sample(self, device, n=1, seq_len=64, latents=None):
+        self.eval()
+        with torch.no_grad():
+            x = torch.randn((seq_len, n, self.embed_dim), device=device) if latents is None else latents 
+            for t in range(self.n_T, 0, -1):
+                x = self.sample_step(x, t)
+        indices = self.emb_to_indices(x)
+        tokens = [self.vocab.lookup_tokens(i.tolist()) for i in indices.T]
+
+        return [" ".join(token) for token in tokens]
+
+    def emb_to_indices(self, x):
+        return F.softmax(self.decoder(x), dim=-1).argmax(dim=-1)
+
+    def run_epoch(self, device):
+        self.train()
+        losses = []
+        loader = tqdm(self.dataloader)
+        for i, x in enumerate(loader):
+            x = x.to(device)
+            self.optimizer.zero_grad()
+            loss = self.forward_process(x)
+            loss.backward()
+            self.optimizer.step()
+            losses.append(loss.item())
+        
+        return np.mean(losses)
+            
 
 if __name__ == "__main__":
     denoiser = TextDenoiser()
+
