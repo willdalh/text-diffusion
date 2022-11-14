@@ -86,7 +86,7 @@ class TextDenoiser(nn.Module):
     def sample_step(self, x, t):
         z = torch.randn_like(x).to(x.device) if t > 1 else 0
         tt = torch.LongTensor([t] * x.shape[1]).to(x.device)
-        eps = self.model(x, tt)
+        eps = self.model(x)
         x = self.oneover_sqrt_alpha[t] * (x - eps * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t]
         return x
 
