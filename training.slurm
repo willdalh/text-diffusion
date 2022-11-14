@@ -46,6 +46,7 @@ echo ""
 module purge
 module load Anaconda3/2020.07
 pip install torchtext
+pip install torchdata
 
 # Create log folder
 echo "Creating log folder ${LOG_NAME} with path logs/training/${LOG_NAME}"
