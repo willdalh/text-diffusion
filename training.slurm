@@ -50,7 +50,7 @@ echo "Starting script"
 echo ""
 module purge
 module load Anaconda3/2020.07
-
+pip install torchtext
 
 python src/main.py --log_name ${LOG_NAME} 
 uname -a
