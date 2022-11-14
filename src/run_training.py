@@ -8,6 +8,7 @@ def run_training(args):
 
     text_denoiser = TextDenoiser()
     text_denoiser.train()
+    text_denoiser = text_denoiser.to(device)
 
     for epoch in range(args.epochs):
         loss = text_denoiser.run_epoch(device)

@@ -31,12 +31,7 @@ echo "Deleting log folder with same name ${LOG_NAME}"
 rm -rf logs/${LOG_NAME}
 # fi
 
-# Create log folder
-echo "Creating log folder ${LOG_NAME} with path logs/training/${LOG_NAME}"
-mkdir -p logs/${LOG_NAME}
 
-# Move slurm output to log folder
-mv ${PROJECT_ROOT}/training_output.out ${PROJECT_ROOT}/logs/${LOG_NAME}/training_output.out
 
 echo "we are running from this directory: $PROJECT_ROOT"
 echo " the name of the job is: $SLURM_JOB_NAME"
@@ -51,6 +46,13 @@ echo ""
 module purge
 module load Anaconda3/2020.07
 pip install torchtext
+
+# Create log folder
+echo "Creating log folder ${LOG_NAME} with path logs/training/${LOG_NAME}"
+mkdir -p logs/${LOG_NAME}
+
+# Move slurm output to log folder
+mv ${PROJECT_ROOT}/training_output.out ${PROJECT_ROOT}/logs/${LOG_NAME}/training_output.out
 
 python src/main.py --log_name ${LOG_NAME} 
 uname -a
