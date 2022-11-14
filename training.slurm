@@ -49,7 +49,7 @@ pip install torchtext
 pip install torchdata
 
 # Create log folder
-echo "Creating log folder ${LOG_NAME} with path logs/training/${LOG_NAME}"
+echo "Creating log folder ${LOG_NAME} with path logs/${LOG_NAME}"
 mkdir -p logs/${LOG_NAME}
 
 # Move slurm output to log folder

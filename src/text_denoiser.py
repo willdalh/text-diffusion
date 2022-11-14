@@ -30,7 +30,7 @@ class TextDenoiser(nn.Module):
         data = tuple(filter(lambda x: x.numel() > 0, data))
         data = torch.cat(data, dim=1).squeeze(0)[:70000]
         dataset = TextDataset(data, seq_len=64)
-        self.dataloader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=4)
+        self.dataloader = DataLoader(dataset, batch_size=256, shuffle=False, num_workers=1)
 
         self.embed_dim = embed_dim
         self.embedder = nn.Embedding(len(vocab), embed_dim)
