@@ -28,7 +28,7 @@ class TextDenoiser(nn.Module):
         self.vocab = vocab
         data = [torch.LongTensor([vocab(tokenizer(item))]) for item in train_iter]
         data = tuple(filter(lambda x: x.numel() > 0, data))
-        data = torch.cat(data, dim=1).squeeze(0)
+        data = torch.cat(data, dim=1).squeeze(0)[:100000]
         dataset = TextDataset(data, seq_len=64)
         self.dataloader = DataLoader(dataset, batch_size=32, shuffle=False, num_workers=4)
 
