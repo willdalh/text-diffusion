@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=12000
-#SBATCH --job-name="training diffusion"
+#SBATCH --job-name="textdiffusion"
 #SBATCH --output=training_output.out
 #SBATCH --mail-user=williad@stud.ntnu.no
 #SBATCH --mail-type=ALL
@@ -16,27 +16,27 @@
 WORKDIR=${SLURM_SUBMIT_DIR}
 cd ${WORKDIR}
 
-LOG_NAME="ema_mnist"
+LOG_NAME="train_test"
 
-PROJECT_ROOT="/cluster/work/williad/diffusion-project"
-JOB_DIR="jobs/training"
+PROJECT_ROOT="/cluster/work/williad/text-diffusion"
 
-mv training_output.out ${PROJECT_ROOT}/${JOB_DIR}/training_output.out # Move to job dir
+
+mv training_output.out ${PROJECT_ROOT}/training_output.out # Move to job dir
 cd ${PROJECT_ROOT}
 
 # Remove log if name already exists
 
 # if [[ -f logs/training/${LOG_NAME} ]]; then 
 echo "Deleting log folder with same name ${LOG_NAME}"
-rm -rf logs/training/${LOG_NAME}
+rm -rf logs/${LOG_NAME}
 # fi
 
 # Create log folder
 echo "Creating log folder ${LOG_NAME} with path logs/training/${LOG_NAME}"
-mkdir -p logs/training/${LOG_NAME}
+mkdir -p logs/${LOG_NAME}
 
 # Move slurm output to log folder
-mv ${PROJECT_ROOT}/${JOB_DIR}/training_output.out ${PROJECT_ROOT}/logs/training/${LOG_NAME}/training_output.out
+mv ${PROJECT_ROOT}/training_output.out ${PROJECT_ROOT}/logs/${LOG_NAME}/training_output.out
 
 echo "we are running from this directory: $PROJECT_ROOT"
 echo " the name of the job is: $SLURM_JOB_NAME"
@@ -52,5 +52,5 @@ module purge
 module load Anaconda3/2020.07
 
 
-python src/main.py --log_name ${LOG_NAME} --dataset mnist --lr 0.00015 --epochs 3000
+python src/main.py --log_name ${LOG_NAME} 
 uname -a
