@@ -22,7 +22,8 @@ def run_training(args):
                 f.write(f"Epoch {epoch}:\n")
                 for sentence in sentences:
                     f.write(sentence)
-                f.write("\n")
+                    f.write("\n")
+                f.write("\n\n")
 
             
 
