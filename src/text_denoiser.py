@@ -23,7 +23,7 @@ class TextDenoiser(nn.Module):
 
         train_iter = WikiText2(root="./data", split="train")
         # Slice the dataset to make it smaller
-        train_iter = list(train_iter)[:2000]
+        train_iter = list(train_iter)[:8000]
         tokenizer = ttdutils.get_tokenizer("basic_english")
         vocab = build_vocab_from_iterator(map(tokenizer, train_iter), specials=["<unk>"])
         vocab.set_default_index(vocab["<unk>"])
