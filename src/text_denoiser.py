@@ -72,7 +72,7 @@ class TextDenoiser(nn.Module):
         x_emb = self.embedder(x)
 
         ts = torch.randint(1, self.n_T, (x.shape[0],)).to(x.device) # TODO CHECK SHAPE FOR SEQ_LEN
-        eps = self.model(x_emb)
+        eps = torch.randn_like(x_emb).to(x.device)
         x_t = self.sqrt_alphabar[ts, None, None] * x_emb + self.sqrt_m_alphabar[ts, None, None] * eps
         pred_eps = self.model(x_t)
         noise_loss = self.criterion(eps, pred_eps)
