@@ -12,7 +12,7 @@ def run_training(args):
 
     for epoch in range(args.epochs):
         loss = text_denoiser.run_epoch(device)
-        print(f"Epoch {epoch}: {loss}")
+        print(f"\nEpoch {epoch}: {loss}")
 
         if epoch % args.save_interval == 0 or epoch == args.epochs - 1 or epoch in [0, 1, 2, 3, 4, 5]:
             torch.save(text_denoiser.state_dict(), f"{args.log_dir}/models/saved_model.pt")
