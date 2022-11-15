@@ -108,16 +108,22 @@ class TextDenoiser(nn.Module):
     def run_epoch(self, device):
         self.train()
         losses = []
+        noise_losses = []
+        reconstruction_losses = []
+
         loader = tqdm(self.dataloader)
         for i, x in enumerate(loader):
             x = x.to(device)
             self.optimizer.zero_grad()
-            loss = self.forward_process(x)
+            loss, loss_comp = self.forward_process(x)
             loss.backward()
             self.optimizer.step()
+
             losses.append(loss.item())
+            noise_losses.append(loss_comp["noise_loss"].item())
+            reconstruction_losses.append(loss_comp["reconstruction_loss"].item())
         
-        return np.mean(losses)
+        return np.mean(losses), {"noise_loss": np.mean(noise_losses), "reconstruction_loss": np.mean(reconstruction_losses)}
             
 
 if __name__ == "__main__":
