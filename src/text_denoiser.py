@@ -37,7 +37,7 @@ class TextDenoiser(nn.Module):
         self.embed_dim = embed_dim
         self.embedder = nn.Embedding(len(vocab), embed_dim)
         # self.model = nn.Transformer(d_model=embed_dim, nhead=12, num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=3072, dropout=0.1, activation='gelu')s
-        self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=12, dim_feedforward=1024, dropout=0.1, activation='gelu'), num_layers=6)
+        self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=12, dim_feedforward=3072, dropout=0.1, activation='gelu'), num_layers=6)
         self.decoder = nn.Linear(embed_dim, len(vocab))
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
@@ -72,7 +72,7 @@ class TextDenoiser(nn.Module):
     def forward_process(self, x):
         x_emb = self.embedder(x)
 
-        ts = torch.randint(1, self.n_T, (x.shape[1],)).to(x.device) # TODO CHECK SHAPE FOR SEQ_LEN
+        ts = torch.randint(1, self.n_T, (x.shape[1],)).to(x.device) 
         eps = torch.randn_like(x_emb).to(x.device)
         x_t = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps
         pred_eps = self.model(x_t)
