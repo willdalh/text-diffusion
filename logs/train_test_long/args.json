@@ -1,0 +1,13 @@
+{
+    "log_name": "train_test_long",
+    "save_interval": 20,
+    "lr": 0.0003,
+    "betas": [
+        0.0001,
+        0.02
+    ],
+    "n_T": 1000,
+    "embed_dim": 768,
+    "epochs": 1000,
+    "log_dir": "logs/train_test_long"
+}
