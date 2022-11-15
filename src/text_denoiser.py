@@ -12,7 +12,7 @@ import torchtext.data.utils as ttdutils
 from text_dataset import TextDataset
 
 class TextDenoiser(nn.Module):
-    def __init__(self, betas = (1e-4, 0.02), n_T = 1000, lr=3e-4, embed_dim=128):
+    def __init__(self, betas = (1e-4, 0.02), n_T = 1000, lr=3e-4, embed_dim=228):
         super(TextDenoiser, self).__init__()
         
         self.betas = betas
