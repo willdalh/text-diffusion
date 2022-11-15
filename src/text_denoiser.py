@@ -12,7 +12,7 @@ import torchtext.data.utils as ttdutils
 from text_dataset import TextDataset
 
 class TextDenoiser(nn.Module):
-    def __init__(self, betas = (1e-4, 0.02), n_T = 1000, lr=3e-4, embed_dim=768):
+    def __init__(self, betas = (1e-4, 0.02), n_T = 1000, lr=3e-4, embed_dim=128):
         super(TextDenoiser, self).__init__()
         
         self.betas = betas
@@ -44,7 +44,7 @@ class TextDenoiser(nn.Module):
         
         
     def _get_schedule(self, beta_start: float, beta_end: float, n_T: int):
-        beta = torch.linspace(beta_start, beta_start, n_T + 1)
+        beta = torch.linspace(beta_start, beta_end, n_T + 1)
         sqrt_beta = torch.sqrt(beta)
         
         alpha = 1 - beta
