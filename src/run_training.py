@@ -6,7 +6,7 @@ import torch
 def run_training(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    text_denoiser = TextDenoiser()
+    text_denoiser = TextDenoiser(betas=(args.beta1, args.beta2), lr=args.lr, n_T=args.n_T, embed_dim=args.embed_dim)
     text_denoiser.train()
     text_denoiser = text_denoiser.to(device)
 

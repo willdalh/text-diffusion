@@ -32,12 +32,12 @@ class TextDenoiser(nn.Module):
         data = tuple(filter(lambda x: x.numel() > 0, data))
         data = torch.cat(data, dim=1).squeeze(0)
         dataset = TextDataset(data, seq_len=64)
-        self.dataloader = DataLoader(dataset, batch_size=128, shuffle=False, num_workers=1)
+        self.dataloader = DataLoader(dataset, batch_size=128, shuffle=True, num_workers=1)
 
         self.embed_dim = embed_dim
         self.embedder = nn.Embedding(len(vocab), embed_dim)
         # self.model = nn.Transformer(d_model=embed_dim, nhead=12, num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=3072, dropout=0.1, activation='gelu')s
-        self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=12, dim_feedforward=3072, dropout=0.1, activation='gelu'), num_layers=6)
+        self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=12, dim_feedforward=1024, dropout=0.1, activation='gelu'), num_layers=6)
         self.decoder = nn.Linear(embed_dim, len(vocab))
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
