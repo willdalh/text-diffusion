@@ -22,13 +22,15 @@ class TextDenoiser(nn.Module):
 
 
         train_iter = WikiText2(root="./data", split="train")
+        # Slice the dataset to make it smaller
+        train_iter = list(train_iter)[:6000]
         tokenizer = ttdutils.get_tokenizer("basic_english")
         vocab = build_vocab_from_iterator(map(tokenizer, train_iter), specials=["<unk>"])
         vocab.set_default_index(vocab["<unk>"])
         self.vocab = vocab
         data = [torch.LongTensor([vocab(tokenizer(item))]) for item in train_iter]
         data = tuple(filter(lambda x: x.numel() > 0, data))
-        data = torch.cat(data, dim=1).squeeze(0)[:70000]
+        data = torch.cat(data, dim=1).squeeze(0)
         dataset = TextDataset(data, seq_len=64)
         self.dataloader = DataLoader(dataset, batch_size=128, shuffle=False, num_workers=1)
 
@@ -39,7 +41,6 @@ class TextDenoiser(nn.Module):
         self.decoder = nn.Linear(embed_dim, len(vocab))
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
-        # self.to()
         
         
     def _get_schedule(self, beta_start: float, beta_end: float, n_T: int):
@@ -81,7 +82,7 @@ class TextDenoiser(nn.Module):
         y = F.log_softmax(y, dim=-1).permute(0, 2, 1)
         reconstruction_loss = F.cross_entropy(y, x)
         loss = noise_loss + reconstruction_loss
-        return loss
+        return loss, {"noise_loss": noise_loss, "reconstruction_loss": reconstruction_loss}
 
     def sample_step(self, x, t):
         z = torch.randn_like(x).to(x.device) if t > 1 else 0
