@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=12000
-#SBATCH --job-name="longtextdiffusion"
+#SBATCH --job-name="2textdiffusion"
 #SBATCH --output=training_output.out
 #SBATCH --mail-user=williad@stud.ntnu.no
 #SBATCH --mail-type=ALL
@@ -16,7 +16,7 @@
 WORKDIR=${SLURM_SUBMIT_DIR}
 cd ${WORKDIR}
 
-LOG_NAME="train_test_long"
+LOG_NAME="3072ff_228emb"
 
 PROJECT_ROOT="/cluster/work/williad/text-diffusion"
 
@@ -55,5 +55,5 @@ mkdir -p logs/${LOG_NAME}
 # Move slurm output to log folder
 mv ${PROJECT_ROOT}/training_output.out ${PROJECT_ROOT}/logs/${LOG_NAME}/training_output.out
 
-python src/main.py --log_name ${LOG_NAME} --epochs 1000
+python src/main.py --log_name ${LOG_NAME} --epochs 2000
 uname -a

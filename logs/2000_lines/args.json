@@ -1,0 +1,11 @@
+{
+    "log_name": "2000_lines",
+    "save_interval": 20,
+    "lr": 0.0003,
+    "beta1": 0.0001,
+    "beta2": 0.02,
+    "n_T": 1000,
+    "embed_dim": 228,
+    "epochs": 2000,
+    "log_dir": "logs/2000_lines"
+}
