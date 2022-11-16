@@ -5,14 +5,18 @@ from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from tqdm import tqdm
 
+from get_dataset_and_vocab import get_dataset_and_vocab
+
 from torchtext.datasets import WikiText2
 from torchtext.vocab import build_vocab_from_iterator
 import torchtext.data.utils as ttdutils
 
+from models.diffusion_model import DiffusionModel
+
 from text_dataset import TextDataset
 
 class TextDenoiser(nn.Module):
-    def __init__(self, betas = (1e-4, 0.02), n_T = 1000, lr=3e-4, embed_dim=228):
+    def __init__(self, dataloader, vocab, betas = (1e-4, 0.02), n_T = 1000, lr=3e-4, embed_dim=228, d_model=228, dim_feedforward=1024, nhead=12, num_layers=6, use_old_arch=False):
         super(TextDenoiser, self).__init__()
         
         self.betas = betas
@@ -20,27 +24,24 @@ class TextDenoiser(nn.Module):
         self.criterion = nn.MSELoss()
         self._load_schedule(self._get_schedule(*betas, n_T))
 
-
-        train_iter = WikiText2(root="./data", split="train")
-        # Slice the dataset to make it smaller
-        train_iter = list(train_iter)[:2000]
-        tokenizer = ttdutils.get_tokenizer("basic_english")
-        vocab = build_vocab_from_iterator(map(tokenizer, train_iter), specials=["<unk>"])
-        vocab.set_default_index(vocab["<unk>"])
-        self.vocab = vocab
-        data = [torch.LongTensor([vocab(tokenizer(item))]) for item in train_iter]
-        data = tuple(filter(lambda x: x.numel() > 0, data))
-        data = torch.cat(data, dim=1).squeeze(0)
-        dataset = TextDataset(data, seq_len=64)
-        self.dataloader = DataLoader(dataset, batch_size=128, shuffle=True, num_workers=1)
-
+       
         self.embed_dim = embed_dim
         self.embedder = nn.Embedding(len(vocab), embed_dim)
         # self.model = nn.Transformer(d_model=embed_dim, nhead=12, num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=3072, dropout=0.1, activation='gelu')s
-        self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=12, dim_feedforward=3072, dropout=0.1, activation='gelu'), num_layers=6)
+        if use_old_arch:
+            self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=d_model, nhead=12, dim_feedforward=dim_feedforward, dropout=0.1, activation='gelu'), num_layers=6)
+        else:
+            self.model = DiffusionModel(embed_dim=embed_dim, d_model=d_model, dim_feedforward=dim_feedforward, nhead=nhead, num_layers=num_layers)
+
         self.decoder = nn.Linear(embed_dim, len(vocab))
+        self.decoder.weight = nn.Parameter(self.embedder.weight)
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
+
+        self.dataloader = dataloader
+        self.vocab = vocab
+
+        self.use_old_arch = use_old_arch
         
         
     def _get_schedule(self, beta_start: float, beta_end: float, n_T: int):
@@ -75,7 +76,7 @@ class TextDenoiser(nn.Module):
         ts = torch.randint(1, self.n_T, (x.shape[1],)).to(x.device) 
         eps = torch.randn_like(x_emb).to(x.device)
         x_t = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps
-        pred_eps = self.model(x_t)
+        pred_eps = self.model(x_t) if self.use_old_arch else self.model(x_t, ts)
         noise_loss = self.criterion(eps, pred_eps)
 
         y = self.decoder(x_emb)
@@ -87,7 +88,7 @@ class TextDenoiser(nn.Module):
     def sample_step(self, x, t):
         z = torch.randn_like(x).to(x.device) if t > 1 else 0
         tt = torch.LongTensor([t] * x.shape[1]).to(x.device)
-        eps = self.model(x)
+        eps = self.model(x) if self.use_old_arch else self.model(x, tt)
         x = self.oneover_sqrt_alpha[t] * (x - eps * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t]
         return x
 
@@ -113,6 +114,7 @@ class TextDenoiser(nn.Module):
 
         loader = tqdm(self.dataloader)
         for i, x in enumerate(loader):
+            # print(x.shape)
             x = x.to(device)
             self.optimizer.zero_grad()
             loss, loss_comp = self.forward_process(x)
@@ -124,6 +126,11 @@ class TextDenoiser(nn.Module):
             reconstruction_losses.append(loss_comp["reconstruction_loss"].item())
         
         return np.mean(losses), {"noise_loss": np.mean(noise_losses), "reconstruction_loss": np.mean(reconstruction_losses)}
+
+    def cosine_similarity(self, x, y):
+        return F.cosine_similarity(x, y, dim=-1)
+
+    # def load_from_training_session
             
 
 if __name__ == "__main__":
