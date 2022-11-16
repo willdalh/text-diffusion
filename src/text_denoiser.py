@@ -27,6 +27,8 @@ class TextDenoiser(nn.Module):
        
         self.embed_dim = embed_dim
         self.embedder = nn.Embedding(len(vocab), embed_dim)
+        # Freeze embedding weights
+        self.embedder.weight.requires_grad = False
         # self.model = nn.Transformer(d_model=embed_dim, nhead=12, num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=3072, dropout=0.1, activation='gelu')s
         if use_old_arch:
             self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=d_model, nhead=12, dim_feedforward=dim_feedforward, dropout=0.1, activation='gelu'), num_layers=6)
