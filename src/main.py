@@ -26,7 +26,7 @@ def main(args):
         shutil.rmtree(args.log_dir)
         os.makedirs(args.log_dir)
     subdirs = ["models", "samples"]
-    [os.makedirs(args.log_dir + "/" + subdir) for subdir in subdirs]
+    [os.makedirs(args.log_dir + "/" + subdir) for subdir in subdirs if not os.path.exists(args.log_dir + "/" + subdir)]
 
     with open(args.log_dir + "/args.json", "w") as f:
         json.dump(args.__dict__, f, indent=4)
@@ -38,16 +38,26 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--log_name", default="train_test", help="The directory to log in", type=str)
-    # parser.add_argument("--dataset", default="mnist", help="The dataset to use", type=str)
+    parser.add_argument("--dataset", default="jokes", help="The dataset to use", type=str)
+    parser.add_argument("--line_slice", default=None, help="The number of lines to use from the dataset", type=int)
     parser.add_argument("--save_interval", default=20, help="The number of epochs between saving models", type=int)
 
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--beta1", type=float, default=1e-4)
     parser.add_argument("--beta2", type=float, default=0.02)
     parser.add_argument("--n_T", type=int, default=1000)
-    parser.add_argument("--embed_dim", type=int, default=228)
 
-    parser.add_argument("--epochs", type=int, default=100)
+    parser.add_argument("--seq_len", type=int, default=32)
+
+    parser.add_argument("--embed_dim", type=int, default=228)
+    parser.add_argument("--d_model", type=int, default=114)
+    parser.add_argument("--nhead", type=int, default=6)
+    parser.add_argument("--num_layers", type=int, default=3)
+    
+
+    parser.add_argument("--epochs", type=int, default=2000)
+    parser.add_argument("--batch_size", type=int, default=128)
+
 
 
     args = parser.parse_args()

@@ -1,13 +1,18 @@
 {
     "log_name": "train_test",
+    "dataset": "jokes",
+    "line_slice": 20,
     "save_interval": 20,
     "lr": 0.0003,
-    "betas": [
-        0.0001,
-        0.02
-    ],
+    "beta1": 0.0001,
+    "beta2": 0.02,
     "n_T": 1000,
-    "embed_dim": 768,
-    "epochs": 200,
+    "seq_len": 32,
+    "embed_dim": 228,
+    "d_model": 114,
+    "nhead": 6,
+    "num_layers": 3,
+    "epochs": 2000,
+    "batch_size": 128,
     "log_dir": "logs/train_test"
 }
