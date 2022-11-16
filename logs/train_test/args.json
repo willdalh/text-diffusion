@@ -8,6 +8,6 @@
     ],
     "n_T": 1000,
     "embed_dim": 768,
-    "epochs": 100,
+    "epochs": 200,
     "log_dir": "logs/train_test"
 }
