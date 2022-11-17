@@ -36,7 +36,7 @@ class TextDenoiser(nn.Module):
             self.model = DiffusionModel(embed_dim=embed_dim, d_model=d_model, dim_feedforward=dim_feedforward, nhead=nhead, num_layers=num_layers)
 
         self.decoder = nn.Linear(embed_dim, len(vocab))
-        self.decoder.weight = nn.Parameter(self.embedder.weight)
+        # self.decoder.weight = nn.Parameter(self.embedder.weight)
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
 
