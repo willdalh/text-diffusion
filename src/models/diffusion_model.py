@@ -14,6 +14,7 @@ class DiffusionModel(nn.Module):
         self.embed_projector = nn.Linear(embed_dim, d_model)
 
         self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead, dim_feedforward=dim_feedforward, dropout=0.1, activation='gelu'), num_layers=num_layers)
+        
         self.output_projector = nn.Linear(d_model, embed_dim)
         
 

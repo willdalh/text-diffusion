@@ -6,6 +6,8 @@ import shutil
 import json
 import time
 
+def str_to_bool(s):
+    return s in ["True", "true", "1"]
 
 def main(args):
     # * Add additional args
@@ -54,6 +56,8 @@ if __name__ == "__main__":
     parser.add_argument("--nhead", type=int, default=6)
     parser.add_argument("--num_layers", type=int, default=3)
     parser.add_argument("--dim_feedforward", type=int, default=1024)
+
+    parser.add_argument("--use_old_arch", type=str_to_bool, default=False)
     
 
     parser.add_argument("--epochs", type=int, default=2000)
