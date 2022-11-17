@@ -1,7 +1,7 @@
 {
     "log_name": "train_test",
     "dataset": "jokes",
-    "line_slice": 20,
+    "line_slice": 10,
     "save_interval": 20,
     "lr": 0.0003,
     "beta1": 0.0001,

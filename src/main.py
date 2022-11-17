@@ -53,6 +53,7 @@ if __name__ == "__main__":
     parser.add_argument("--d_model", type=int, default=114)
     parser.add_argument("--nhead", type=int, default=6)
     parser.add_argument("--num_layers", type=int, default=3)
+    parser.add_argument("--dim_feedforward", type=int, default=1024)
     
 
     parser.add_argument("--epochs", type=int, default=2000)

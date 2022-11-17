@@ -18,7 +18,7 @@ def run_training(args):
     dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=1, collate_fn=collate_fn)
 
 
-    text_denoiser = TextDenoiser(dataloader, vocab, betas=(args.beta1, args.beta2), lr=args.lr, n_T=args.n_T, embed_dim=args.embed_dim, d_model=args.d_model, nhead=args.nhead, num_layers=args.num_layers)
+    text_denoiser = TextDenoiser(dataloader, vocab, betas=(args.beta1, args.beta2), lr=args.lr, n_T=args.n_T, embed_dim=args.embed_dim, d_model=args.d_model, nhead=args.nhead, num_layers=args.num_layers, dim_feedforward=args.dim_feedforward)
     text_denoiser.train()
     text_denoiser = text_denoiser.to(device)
 

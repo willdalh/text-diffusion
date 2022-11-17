@@ -4,13 +4,13 @@ import torch.nn.functional as F
 
 
 class DiffusionModel(nn.Module):
-    def __init__(self, embed_dim, d_model=114, dim_feedforward=1024, nhead=12, num_layers=6, device="cuda" if torch.cuda.is_available() else "cpu"):
+    def __init__(self, embed_dim=896, d_model=114, dim_feedforward=1024, nhead=12, num_layers=6, device="cuda" if torch.cuda.is_available() else "cpu"):
         super().__init__()
         self.device = device
         self.embed_dim = embed_dim
         self.d_model = d_model
 
-        self.timestep_projecter = nn.Linear(d_model, d_model)
+        self.timestep_projector = nn.Linear(d_model, d_model)
         self.embed_projector = nn.Linear(embed_dim, d_model)
 
         self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead, dim_feedforward=dim_feedforward, dropout=0.1, activation='gelu'), num_layers=num_layers)
@@ -27,10 +27,14 @@ class DiffusionModel(nn.Module):
     def forward(self, x, t):
         t = t.unsqueeze(-1).type(torch.float32) # Create features dimension which will be repeated later
         t_enc = self.timestep_encoding(t, self.d_model)
-        t_enc = self.timestep_projecter(t_enc)
+        t_enc = self.timestep_projector(t_enc)
         t_enc = t_enc.unsqueeze(0).repeat(x.shape[0], 1, 1)
+        print(x.shape)
+        print(t_enc.shape)
 
         x = self.embed_projector(x)
+        print(x.shape)
+        print("\n")
         x = x + t_enc
         x = self.model(x)
 

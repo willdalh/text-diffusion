@@ -1,3 +1,0 @@
-Epoch 0 - Total loss: 1.291229208310445, Noise loss: 1.291229208310445, Reconstruction loss: 0.0
-Epoch 1 - Total loss: 1.1861138343811035, Noise loss: 1.1861138343811035, Reconstruction loss: 0.0
-Epoch 2 - Total loss: 1.0993860960006714, Noise loss: 1.0993860960006714, Reconstruction loss: 0.0
