@@ -1,0 +1,18 @@
+{
+    "log_name": "jokes_freeze",
+    "dataset": "jokes",
+    "line_slice": null,
+    "save_interval": 20,
+    "lr": 0.0003,
+    "beta1": 0.0001,
+    "beta2": 0.02,
+    "n_T": 1000,
+    "seq_len": 32,
+    "embed_dim": 228,
+    "d_model": 114,
+    "nhead": 6,
+    "num_layers": 3,
+    "epochs": 50000,
+    "batch_size": 128,
+    "log_dir": "logs/jokes_freeze"
+}
