@@ -41,7 +41,7 @@ def run_training(args):
                 for sentence in sentences:
                     f.write(sentence)
                     f.write("\n")
-                f.write("\n)
+                f.write("\n")
             
             with open(f"{args.log_dir}/losses.txt", "a") as f:
                 for l in previous_losses:
