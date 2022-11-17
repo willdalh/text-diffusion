@@ -24,10 +24,14 @@ def run_training(args):
 
     torch.save(text_denoiser.vocab, args.log_dir + "/vocab.pt")
 
+    previous_losses = []
+
     for epoch in range(args.epochs):
         loss, comp_dict = text_denoiser.run_epoch(device)
-        print(f"\nEpoch {epoch} - Total loss: {loss}, Noise loss: {comp_dict['noise_loss']}, Reconstruction loss: {comp_dict['reconstruction_loss']}")
 
+        loss_desc = f"Epoch {epoch} - Total loss: {loss}, Noise loss: {comp_dict['noise_loss']}, Reconstruction loss: {comp_dict['reconstruction_loss']}"
+        previous_losses.append(loss_desc)
+        print(f"\n{loss_desc}")
         if epoch % args.save_interval == 0 or epoch == args.epochs - 1 or epoch in [0, 1, 2, 3, 4, 5]:
             torch.save(text_denoiser.state_dict(), f"{args.log_dir}/models/saved_model.pt")
 
@@ -37,7 +41,12 @@ def run_training(args):
                 for sentence in sentences:
                     f.write(sentence)
                     f.write("\n")
-                f.write("\n\n")
+                f.write("\n)
+            
+            with open(f"{args.log_dir}/losses.txt", "a") as f:
+                for l in previous_losses:
+                    f.write(f"{l}\n")
+                previous_losses = []
 
             
 

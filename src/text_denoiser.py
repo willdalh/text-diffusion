@@ -116,7 +116,6 @@ class TextDenoiser(nn.Module):
 
         loader = tqdm(self.dataloader)
         for i, x in enumerate(loader):
-            # print(x.shape)
             x = x.to(device)
             self.optimizer.zero_grad()
             loss, loss_comp = self.forward_process(x)
