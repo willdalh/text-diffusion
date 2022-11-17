@@ -29,12 +29,10 @@ class DiffusionModel(nn.Module):
         t_enc = self.timestep_encoding(t, self.d_model)
         t_enc = self.timestep_projector(t_enc)
         t_enc = t_enc.unsqueeze(0).repeat(x.shape[0], 1, 1)
-        print(x.shape)
-        print(t_enc.shape)
+
 
         x = self.embed_projector(x)
-        print(x.shape)
-        print("\n")
+
         x = x + t_enc
         x = self.model(x)
 
