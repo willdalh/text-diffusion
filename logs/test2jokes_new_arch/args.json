@@ -1,7 +1,7 @@
 {
-    "log_name": "wikitext2_new_arch",
-    "dataset": "wikitext2",
-    "line_slice": 2000,
+    "log_name": "test2jokes_new_arch",
+    "dataset": "jokes",
+    "line_slice": null,
     "save_interval": 20,
     "lr": 0.0003,
     "beta1": 0.0001,
@@ -16,5 +16,5 @@
     "use_old_arch": false,
     "epochs": 40000,
     "batch_size": 128,
-    "log_dir": "logs/wikitext2_new_arch"
+    "log_dir": "logs/test2jokes_new_arch"
 }

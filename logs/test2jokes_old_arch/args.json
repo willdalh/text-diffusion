@@ -1,20 +1,20 @@
 {
-    "log_name": "wikitext2_new_arch",
-    "dataset": "wikitext2",
-    "line_slice": 2000,
+    "log_name": "test2jokes_old_arch",
+    "dataset": "jokes",
+    "line_slice": null,
     "save_interval": 20,
     "lr": 0.0003,
     "beta1": 0.0001,
     "beta2": 0.02,
     "n_T": 1000,
     "seq_len": 32,
-    "embed_dim": 372,
+    "embed_dim": 228,
     "d_model": 228,
     "nhead": 6,
     "num_layers": 12,
     "dim_feedforward": 1024,
-    "use_old_arch": false,
+    "use_old_arch": true,
     "epochs": 40000,
     "batch_size": 128,
-    "log_dir": "logs/wikitext2_new_arch"
+    "log_dir": "logs/test2jokes_old_arch"
 }
