@@ -133,4 +133,4 @@ dmypy.json
 data
 logs/*/models
 logs/**/models
-logs/**/training_output.out
+logs/*/training_output.out
