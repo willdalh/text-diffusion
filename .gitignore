@@ -134,3 +134,4 @@ data
 logs/*/models
 logs/**/models
 logs/*/training_output.out
+resources

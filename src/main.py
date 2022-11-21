@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--log_name", default="train_test", help="The directory to log in", type=str)
-    parser.add_argument("--dataset", default="jokes", help="The dataset to use", type=str)
+    parser.add_argument("--dataset", default="wikitext2", help="The dataset to use", type=str)
     parser.add_argument("--line_slice", default=None, help="The number of lines to use from the dataset", type=int)
     parser.add_argument("--save_interval", default=20, help="The number of epochs between saving models", type=int)
 
@@ -58,6 +58,7 @@ if __name__ == "__main__":
     parser.add_argument("--dim_feedforward", type=int, default=1024)
 
     parser.add_argument("--use_old_arch", type=str_to_bool, default=False)
+    parser.add_argument("--pretrained_emb", type=str, default=None)
     
 
     parser.add_argument("--epochs", type=int, default=2000)
