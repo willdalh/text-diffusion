@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=12000
-#SBATCH --job-name="runwikitext2_new_arch"
+#SBATCH --job-name="run3wikitext2"
 #SBATCH --output=training_output.out
 #SBATCH --mail-user=williad@stud.ntnu.no
 #SBATCH --mail-type=ALL
@@ -16,7 +16,7 @@
 WORKDIR=${SLURM_SUBMIT_DIR}
 cd ${WORKDIR}
 
-LOG_NAME="wikitext2_new_arch"
+LOG_NAME="wikitext2_glove_old_arch"
 
 PROJECT_ROOT="/cluster/work/williad/text-diffusion"
 
@@ -55,5 +55,5 @@ mkdir -p logs/${LOG_NAME}
 # Move slurm output to log folder
 mv ${PROJECT_ROOT}/training_output.out ${PROJECT_ROOT}/logs/${LOG_NAME}/training_output.out
 
-python src/main.py --log_name ${LOG_NAME} --epochs 40000 --dataset wikitext2 --line_slice 2000 --num_layers 12 --nhead 6 --d_model 228 --embed_dim 372 --dim_feedforward 1024
+python src/main.py --log_name ${LOG_NAME} --epochs 40000 --dataset wikitext2 --line_slice 2000 --num_layers 6 --nhead 5 --d_model 100 --embed_dim 100 --dim_feedforward 1024 --pretrained_emb glove
 uname -a
