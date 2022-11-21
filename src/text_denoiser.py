@@ -4,6 +4,8 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from tqdm import tqdm
+import json
+from argparse import Namespace
 
 from get_dataset_and_vocab import get_dataset_and_vocab
 
@@ -82,8 +84,7 @@ class TextDenoiser(nn.Module):
         noise_loss = self.criterion(eps, pred_eps)
 
         y = self.decoder(x_emb)
-        y = F.log_softmax(y, dim=-1).permute(0, 2, 1)
-        reconstruction_loss = F.cross_entropy(y, x)
+        reconstruction_loss = F.cross_entropy(y.permute(1, 2, 0), x.T) # y shape: (seq_len, batch_size, vocab_size) -> (batch_size, vocab_size, seq_len), x shape: (seq_len, batch_size) -> (batch_size, seq_len)
         loss = noise_loss + reconstruction_loss
         return loss, {"noise_loss": noise_loss, "reconstruction_loss": reconstruction_loss}
 
@@ -108,6 +109,13 @@ class TextDenoiser(nn.Module):
     def emb_to_indices(self, x):
         return F.softmax(self.decoder(x), dim=-1).argmax(dim=-1)
 
+    def load_from_training_log(self, log_dir, model_name, device):
+        with open(f"{log_dir}/args.json", "r") as f:
+            training_args = json.load(f)
+            training_args = Namespace(**training_args)
+        
+        
+
     def run_epoch(self, device):
         self.train()
         losses = []
@@ -116,6 +124,7 @@ class TextDenoiser(nn.Module):
 
         loader = tqdm(self.dataloader)
         for i, x in enumerate(loader):
+            # print(x.shape)
             x = x.to(device)
             self.optimizer.zero_grad()
             loss, loss_comp = self.forward_process(x)
