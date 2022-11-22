@@ -318,3 +318,47 @@ Epoch 1480:
 @-@ the the @-@ ( . . ( ( . ( the . the the ( . . , the . the . it , @-@ ( . the the , ,
 the the ( as @-@ the ( the as , with with with with . . . @-@ with . @-@ , . , . with . the with . ( the
 
+Epoch 1500:
+, . ( the . ( the ( . the @-@ . the , the the @-@ . @-@ the the . @-@ ( ( , . the . it . (
+as as . with the . . ( . , the the . ( . with the with ( the ( the @-@ . the the . the than , @-@ (
+
+Epoch 1520:
+. @-@ the ( ( . @-@ @-@ the @-@ . as the . , . the @-@ the , , the . . @-@ . the the ( . the @-@
+, ( it as ( ( the the the the the ( . , . the ( ( the @-@ . , the @-@ ( . ( ( . , ( the
+
+Epoch 1540:
+with ( ( the ( . the as the the the the it as the the the the . @-@ , , as . with the . with the . , ,
+. . . @-@ . @-@ the . the , the the with the the the the ( . @-@ ( . with . , with the . the the , .
+
+Epoch 1560:
+. as the , ( ( ( the the the ( the , , . with the . ( . . ( . @-@ ( it the the ( ( , ,
+the , the the . ( , , ( ( the . the it with the the the the ( . . , , . . with ( @-@ with it the
+
+Epoch 1580:
+the the , . ( ( , the @-@ . the the with ( it @-@ the the . it . ( . , the with . with ( , @-@ as
+( , as . the ( ( @-@ the the , the with ( the ( @-@ it . . the . as . ( the the the with @-@ with (
+
+Epoch 1600:
+, ( @-@ , ( the . the , ( the . the with ( it . the . ( the . . , the , . , it ( @-@ with
+( , ( than it . the @-@ , the the the , . ( . @-@ , . , the with with , , . the the @-@ the , with
+
+Epoch 1620:
+@-@ ( , , . ( , . . . the the . the it . . . @-@ the the the it the the , ( . . ( the with
+. . ( . than . . the ( ( , , , ( . , . ( @-@ @-@ the the @-@ as . ( , it , ( the (
+
+Epoch 1640:
+the the ( with . ( with ( the ( the . ( ( ( , with with with , , it @-@ @-@ ( . . ( ( ( @-@ .
+, . . . . alongside the it . . with . with @-@ as . with the , the . @-@ the the . , the the the the the (
+
+Epoch 1660:
+the the with . the ( as ( . the . the , . . the with ( the the with , with the . . the the . . . as
+( . the ( with . with @-@ the ( ( , , , . ( . , ( ( the . @-@ with , the the ( the ( , ,
+
+Epoch 1680:
+the the ( , the @-@ . the with . @-@ the it with , @-@ the ( . . it the the , it with the ( the the ( with
+as @-@ . , the , . , the the with . . the , as with ( , . the the with . it the ( , . . the the
+
+Epoch 1700:
+the the the , @-@ , . ( the the ( ( than the ( than . the , . with the . @-@ ( ( , ( ( . @-@ @-@
+( with , with . the @-@ ( ( with it it . ( . . the the ( the ( @-@ . ( ( , it . the the . the
+

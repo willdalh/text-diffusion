@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=12000
-#SBATCH --job-name="old_arch_wikitext2"
+#SBATCH --job-name="self_cond_wikitext2"
 #SBATCH --output=training_output.out
 #SBATCH --mail-user=williad@stud.ntnu.no
 #SBATCH --mail-type=ALL
@@ -16,7 +16,7 @@
 WORKDIR=${SLURM_SUBMIT_DIR}
 cd ${WORKDIR}
 
-LOG_NAME="wikitext2_glove_actual_old_arch"
+LOG_NAME="wikitext2_self_cond"
 
 PROJECT_ROOT="/cluster/work/williad/text-diffusion"
 

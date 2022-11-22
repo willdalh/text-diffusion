@@ -1,5 +1,5 @@
 {
-    "log_name": "wikitext2_glove_old_arch",
+    "log_name": "wikitext2_self_cond",
     "dataset": "wikitext2",
     "line_slice": 2000,
     "save_interval": 20,
@@ -13,9 +13,10 @@
     "nhead": 5,
     "num_layers": 6,
     "dim_feedforward": 1024,
-    "use_old_arch": false,
+    "use_old_arch": true,
     "pretrained_emb": "glove",
+    "freeze_emb": true,
     "epochs": 40000,
     "batch_size": 128,
-    "log_dir": "logs/wikitext2_glove_old_arch"
+    "log_dir": "logs/wikitext2_self_cond"
 }

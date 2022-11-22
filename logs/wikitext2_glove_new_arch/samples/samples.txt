@@ -390,3 +390,55 @@ Epoch 1840:
 the , the 26 the , 36 13 9 , the 13 26 the 26 the 2008 19 the 19 , , the , 26 the the february 12 , , ,
 , february 19 the the the the 26 , the 86 , 19 26 , the the 12 36 the , the 26 13 13 , the the 86 , , february
 
+Epoch 1860:
+26 , , 26 26 the the 26 the 26 26 the 19 , 27 26 , , , the 13 , 12 the february 26 the 2008 26 february , 28
+19 the the 26 2008 26 26 2009 the 13 2013 19 19 28 the 26 26 13 the the the 28 the 26 , 26 the the , the the ,
+
+Epoch 1880:
+26 , february , 13 on , 26 36 the , the 2008 , 26 , 26 , the , 13 19 the 13 , 2008 , february the 86 , february
+2008 the 19 the 2008 26 the the the , the 2013 13 26 19 , 13 13 the 13 , , 2013 2008 59 26 the , , , 2013 ,
+
+Epoch 1900:
+, , , 2008 1963 the 26 27 19 26 , february 13 , 2013 19 the the 26 the 13 the 19 13 the the , 26 the 26 2013 ,
+the february 26 the 26 26 26 the the , , 2013 2009 the , , the 26 2013 the the the 19 the , 2008 @-@ , , the , ,
+
+Epoch 1920:
+, , 86 the 26 february the 26 , , 2013 february the , , 2008 february the , the 13 13 , 13 the february 27 26 26 26 the 26
+the 26 , , the the the the , 28 the 26 27 , 26 , , 2008 the 13 , , the 13 , february 26 the 26 26 the the
+
+Epoch 1940:
+26 , february , the the the , , 19 , the 19 , 26 the the the 86 february 13 the 26 26 , the the , 26 19 february 26
+, , the , 26 28 26 2008 , , , the , the the , , february the the , , , 26 the , , the february the , 12
+
+Epoch 1960:
+the 26 , the 2008 , 2013 the 2008 the 36 the the the , , 13 the , 9 26 the february 2013 9 26 the february the 26 the ,
+february , 19 , the , 26 , 2008 2013 the , 19 the 26 19 <unk> the 26 86 , 2008 the the the 9 the , 26 26 12 19
+
+Epoch 1980:
+, the , 2013 , the 2013 the 26 13 the , 2008 the , 26 the the 19 26 february 26 the 26 the , 26 , february 26 26 the
+86 26 26 the 26 the 2013 was 86 the 13 2008 february the the , 86 the 26 13 the 2008 the 26 , 28 26 @-@ 26 february 1926 26
+
+Epoch 2000:
+the 26 the 13 13 , the the the 13 , , 13 , , the the february the 2008 the 13 26 1926 13 the 26 , the the 2008 26
+the 42 the the the february the , the the , , , 86 26 the 2008 , 26 19 2008 the 26 , the the 26 19 26 , , 26
+
+Epoch 2020:
+the the 1926 26 , the the the the the 26 the 2008 13 the , , 2008 the 13 13 , the 2013 26 the the the february the 2008 the
+the the , , , , the the , the 26 26 the 27 26 26 , , , 26 26 , the 26 , , , 86 26 , 26 the
+
+Epoch 2040:
+february 13 the 13 , 26 february 13 , 13 26 26 36 , 12 the 26 26 , 13 february the 1926 26 february 2009 , 13 19 the the the
+, the 26 13 27 the , 13 86 27 27 february the 2013 the 26 the 28 , 42 , 26 the , , the 26 26 27 , the ,
+
+Epoch 2060:
+26 2008 , , 19 26 2013 the 2013 the 2008 the the the the 26 2008 27 , the the the , 26 13 1926 26 26 26 26 19 13
+27 , february the 26 , the , the , february , 27 , 2008 , 19 the , 26 13 the the , the 13 26 26 the , , 13
+
+Epoch 2080:
+, 19 the , 26 36 the 26 26 36 26 26 , the , the 26 26 , the 2008 2013 the , the 2013 28 13 , 26 26 ,
+, the 26 february 26 26 26 the the 2008 19 2009 the , the 19 13 26 26 the , 13 the the the 26 , , 2008 26 1926 26
+
+Epoch 2100:
+february 26 26 the 27 , 1926 , the 26 26 2013 26 , 13 , , the 26 the , 26 february , , , 27 26 the the 28 19
+, 26 , the 28 , 2013 the the 19 the the the 27 the , 2008 2013 the , 2008 the the the 26 26 26 the 26 the , the
+
