@@ -1,0 +1,21 @@
+{
+    "log_name": "wikitext2_glove_actual_old_arch",
+    "dataset": "wikitext2",
+    "line_slice": 2000,
+    "save_interval": 20,
+    "lr": 0.0003,
+    "beta1": 0.0001,
+    "beta2": 0.02,
+    "n_T": 1000,
+    "seq_len": 32,
+    "embed_dim": 100,
+    "d_model": 100,
+    "nhead": 5,
+    "num_layers": 6,
+    "dim_feedforward": 1024,
+    "use_old_arch": true,
+    "pretrained_emb": "glove",
+    "epochs": 40000,
+    "batch_size": 128,
+    "log_dir": "logs/wikitext2_glove_actual_old_arch"
+}
