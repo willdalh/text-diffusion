@@ -17,6 +17,7 @@ def read_glove_vectors(glove_path, vocab, embed_dim):
                 embedding[index] = torch.Tensor([float(x) for x in line[1:]])
                 covered_words.append(word)
 
+    print(f"Found {len(covered_words)} out of {len(vocab)} words in GloVe, meaning {len(vocab) - len(covered_words)} words are missing.")
     for word in vocab.get_stoi():
         if word not in covered_words:
             index = vocab[word]

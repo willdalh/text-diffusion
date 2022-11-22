@@ -14,6 +14,10 @@ def main(args):
     args.log_dir = "logs/" + args.log_name
     # args.im_shape = dataset_to_im_shape_map[args.dataset]
 
+    # * Manipulate args
+    if args.pretrained_emb is not None:
+        args.freeze_emb = True
+
     # ! PROTECTED DIRS
     protected_dirs = []
     if args.log_name in protected_dirs:
@@ -58,8 +62,9 @@ if __name__ == "__main__":
     parser.add_argument("--dim_feedforward", type=int, default=1024)
 
     parser.add_argument("--use_old_arch", type=str_to_bool, default=False)
-    parser.add_argument("--pretrained_emb", type=str, default=None)
     
+    parser.add_argument("--pretrained_emb", type=str, default=None)
+    parser.add_argument("--freeze_emb", type=str_to_bool, default=False)
 
     parser.add_argument("--epochs", type=int, default=2000)
     parser.add_argument("--batch_size", type=int, default=128)

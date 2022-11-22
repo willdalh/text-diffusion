@@ -16,6 +16,8 @@ def get_dataset_and_vocab(dataset_name, seq_len=32, line_slice=None):
         dataset, vocab = get_wikitext2(seq_len, line_slice)
     elif dataset_name == "jokes":
         dataset, vocab = get_jokes(seq_len=seq_len, line_slice=line_slice)
+    elif dataset_name == "minimal":
+        dataset, vocab = get_minimal(seq_len)
     else:
         raise ValueError("Dataset not found")
     return dataset, vocab
@@ -54,6 +56,18 @@ def get_jokes(seq_len, line_slice=None):
     data = torch.cat(data, dim=1).squeeze(0)
   
     
+    return TextDataset(data, seq_len=seq_len), vocab
+
+def get_minimal(seq_len):
+    train_iter = ["This is a test", "This is another test", "This is a third test"]
+    tokenizer = ttdutils.get_tokenizer("basic_english")
+    vocab = build_vocab_from_iterator(map(tokenizer, train_iter), specials=["<unk>"])
+    vocab.set_default_index(vocab["<unk>"])
+    
+    data = [torch.LongTensor([vocab(tokenizer(item))]) for item in train_iter]
+    data = tuple(filter(lambda x: x.numel() > 0, data))
+    data = torch.cat(data, dim=1).squeeze(0)
+
     return TextDataset(data, seq_len=seq_len), vocab
 
 
