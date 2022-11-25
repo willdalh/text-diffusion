@@ -29,10 +29,9 @@ class TextDenoiser(nn.Module):
        
         self.embed_dim = embed_dim
         self.embedder = nn.Embedding(len(vocab), embed_dim)
-        # Freeze embedding weights
-        # self.embedder.weight.requires_grad = False
-        # self.model = nn.Transformer(d_model=embed_dim, nhead=12, num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=3072, dropout=0.1, activation='gelu')s
-        use_self_cond = False
+
+        # Self-conditioning is not set up as an argument. To use it, multiply embed_dim by 2 and set the output_projector in the Strudel-Model to output vectors of length embed_dim//2 
+        # Also, make sure to use the forward_process_loss_self_cond function in run_epoch
         if use_old_arch:
             # Text-Model
             self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=nhead, dim_feedforward=dim_feedforward, dropout=0.1, activation='gelu'), num_layers=num_layers)
@@ -96,18 +95,14 @@ class TextDenoiser(nn.Module):
         eps_pred = torch.zeros_like(eps)
         if True:
             x_pred = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps_pred # Equation 3
-            inpt = torch.cat([x_t, x_pred], dim=-1)
-            eps_pred = self.model(inpt) if self.use_old_arch else self.model(inpt, ts)
-            eps_pred = eps_pred.detach()
-        # print("x_emb.shape", x_emb.shape)
-        # print("eps_pred.shape", eps_pred.shape)
+            inpt = torch.cat([x_t, x_pred], dim=-1) # Condition on x_t and empty eps_pred
+            eps_pred = self.model(inpt) if self.use_old_arch else self.model(inpt, ts) 
+            eps_pred = eps_pred.detach() # Stop gradient
+
         x_pred = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps_pred # Equation 3
-        inpt = torch.cat([x_t, x_pred], dim=-1)
+        inpt = torch.cat([x_t, x_pred], dim=-1) # Condition on previos eps_pred as well
         eps_pred = self.model(inpt) if self.use_old_arch else self.model(inpt, ts)
         noise_loss = self.criterion(eps_pred, eps)
-
-        # pred_eps = self.model(x_t) if self.use_old_arch else self.model(x_t, ts)
-        # noise_loss = self.criterion(eps, pred_eps)
 
         y = self.decoder(x_emb)
         reconstruction_loss = F.cross_entropy(y.permute(1, 2, 0), x.T) # y shape: (seq_len, batch_size, vocab_size) -> (batch_size, vocab_size, seq_len), x shape: (seq_len, batch_size) -> (batch_size, seq_len)
@@ -158,12 +153,10 @@ class TextDenoiser(nn.Module):
                 tt_prev = torch.LongTensor([t - 1] * x.shape[1]).to(x.device)
 
                 x_pred = self.sqrt_alphabar[None, tt, None] * x + self.sqrt_m_alphabar[None, tt, None] * 0 # Equation 3
-                inpt = torch.cat([x, x_pred], dim=-1)
+                inpt = torch.cat([x, x_pred], dim=-1) # Condition on empty eps_pred
                 eps_pred = self.model(inpt) if self.use_old_arch else self.model(inpt, tt_prev)
 
                 z = torch.randn_like(x).to(x.device) if t > 1 else 0
-                # tt = torch.LongTensor([t] * x.shape[1]).to(x.device)
-                # eps = self.model(x) if self.use_old_arch else self.model(x, tt)
                 x = self.oneover_sqrt_alpha[t] * (x - eps_pred * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t] # Equation 5
         indices = self.emb_to_indices(x)
         tokens = [self.vocab.lookup_tokens(i.tolist()) for i in indices.T]

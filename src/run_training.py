@@ -37,9 +37,9 @@ def run_training(args):
         loss_desc = f"Epoch {epoch} - Total loss: {loss}, Noise loss: {comp_dict['noise_loss']}, Reconstruction loss: {comp_dict['reconstruction_loss']}"
         previous_losses.append(loss_desc)
         print(f"\n{loss_desc}")
-        
+
         if epoch % args.save_interval == 0 or epoch == args.epochs - 1 or epoch in [0, 1, 2, 3, 4, 5]:
-            torch.save(text_denoiser.state_dict(), f"{args.log_dir}/models/saved_model.pt")
+            torch.save(text_denoiser.state_dict(), f"{args.log_dir}/models/saved_model.pt") # Save model
 
             sentences = text_denoiser.sample(device, 2, seq_len=args.seq_len)
 

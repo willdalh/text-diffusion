@@ -20,6 +20,8 @@ def read_glove_vectors(glove_path, vocab, embed_dim):
                 covered_words.append(word)
 
     print(f"Found {len(covered_words)} out of {len(vocab)} words in GloVe, meaning {len(vocab) - len(covered_words)} words are missing.")
+
+    # Identify missing words and initialize as Gaussian embeddings
     for word in vocab.get_stoi():
         if word not in covered_words:
             index = vocab[word]
