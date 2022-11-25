@@ -12,7 +12,6 @@ def str_to_bool(s):
 def main(args):
     # * Add additional args
     args.log_dir = "logs/" + args.log_name
-    # args.im_shape = dataset_to_im_shape_map[args.dataset]
 
     # * Manipulate args
     if args.pretrained_emb is not None:

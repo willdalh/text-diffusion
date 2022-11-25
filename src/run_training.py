@@ -18,7 +18,7 @@ def run_training(args):
     text_denoiser.train()
     text_denoiser = text_denoiser.to(device)
 
-    if args.pretrained_emb == "glove":
+    if args.pretrained_emb == "glove": # Load GloVe embeddings
         assert args.embed_dim == 100
         print("Loading GloVe embeddings...")
         glove_vectors = read_glove_vectors("resources/glove.6B.100d.txt", vocab, embed_dim=args.embed_dim).to(device)
@@ -34,14 +34,16 @@ def run_training(args):
 
     for epoch in range(args.epochs):
         loss, comp_dict = text_denoiser.run_epoch(dataloader, device)
-
         loss_desc = f"Epoch {epoch} - Total loss: {loss}, Noise loss: {comp_dict['noise_loss']}, Reconstruction loss: {comp_dict['reconstruction_loss']}"
         previous_losses.append(loss_desc)
         print(f"\n{loss_desc}")
+        
         if epoch % args.save_interval == 0 or epoch == args.epochs - 1 or epoch in [0, 1, 2, 3, 4, 5]:
             torch.save(text_denoiser.state_dict(), f"{args.log_dir}/models/saved_model.pt")
 
             sentences = text_denoiser.sample(device, 2, seq_len=args.seq_len)
+
+            # Write samples to file
             with open(f"{args.log_dir}/samples/samples.txt", "a", encoding="utf-8") as f:
                 f.write(f"Epoch {epoch}:\n")
                 for sentence in sentences:
@@ -49,6 +51,7 @@ def run_training(args):
                     f.write("\n")
                 f.write("\n")
             
+            # Write losses to file
             with open(f"{args.log_dir}/losses.txt", "a", encoding="utf-8") as f:
                 for l in previous_losses:
                     f.write(f"{l}\n")

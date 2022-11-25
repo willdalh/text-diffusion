@@ -82,10 +82,11 @@ class TextDenoiser(nn.Module):
     def noise(self, x, ts):
         """Corrupt x with noise at timesteps ts"""
         eps = torch.randn_like(x).to(x.device)
-        x_noised = self.sqrt_alphabar[None, ts, None] * x + self.sqrt_m_alphabar[None, ts, None] * eps
+        x_noised = self.sqrt_alphabar[None, ts, None] * x + self.sqrt_m_alphabar[None, ts, None] * eps # Equation 3
         return x_noised, eps
 
     def forward_process_loss_self_cond(self, x):
+        """Perform forward process and return losses when using self-conditioning"""
         x_emb = self.embedder(x)
 
         ts = torch.randint(1, self.n_T, (x.shape[1],)).to(x.device) 
@@ -94,13 +95,13 @@ class TextDenoiser(nn.Module):
         # Self conditioning
         eps_pred = torch.zeros_like(eps)
         if True:
-            x_pred = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps_pred
+            x_pred = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps_pred # Equation 3
             inpt = torch.cat([x_t, x_pred], dim=-1)
             eps_pred = self.model(inpt) if self.use_old_arch else self.model(inpt, ts)
             eps_pred = eps_pred.detach()
         # print("x_emb.shape", x_emb.shape)
         # print("eps_pred.shape", eps_pred.shape)
-        x_pred = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps_pred
+        x_pred = self.sqrt_alphabar[None, ts, None] * x_emb + self.sqrt_m_alphabar[None, ts, None] * eps_pred # Equation 3
         inpt = torch.cat([x_t, x_pred], dim=-1)
         eps_pred = self.model(inpt) if self.use_old_arch else self.model(inpt, ts)
         noise_loss = self.criterion(eps_pred, eps)
@@ -114,6 +115,7 @@ class TextDenoiser(nn.Module):
         return loss, {"noise_loss": noise_loss, "reconstruction_loss": reconstruction_loss}
 
     def forward_process_loss(self, x):
+        """Perform forward process and return losses"""
         x_emb = self.embedder(x)
 
         ts = torch.randint(1, self.n_T, (x.shape[1],)).to(x.device) 
@@ -127,13 +129,15 @@ class TextDenoiser(nn.Module):
         return loss, {"noise_loss": noise_loss, "reconstruction_loss": reconstruction_loss}
 
     def sample_step(self, x, t):
+        """One step of the reverse process"""
         z = torch.randn_like(x).to(x.device) if t > 1 else 0
         tt = torch.LongTensor([t] * x.shape[1]).to(x.device)
         eps = self.model(x) if self.use_old_arch else self.model(x, tt)
-        x = self.oneover_sqrt_alpha[t] * (x - eps * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t]
+        x = self.oneover_sqrt_alpha[t] * (x - eps * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t] # Equation 5
         return x
 
     def sample(self, device, n=1, seq_len=64, latents=None):
+        """Sample normally"""
         self.eval()
         with torch.no_grad():
             x = torch.randn((seq_len, n, self.embed_dim), device=device) if latents is None else latents 
@@ -145,6 +149,7 @@ class TextDenoiser(nn.Module):
         return [" ".join(token) for token in tokens]
     
     def sample_self_conditioned(self, device, n=1, seq_len=64, latents=None):
+        """Sample using self-conditioning"""
         self.eval()
         with torch.no_grad():
             x = torch.randn((seq_len, n, self.embed_dim), device=device) if latents is None else latents 
@@ -152,14 +157,14 @@ class TextDenoiser(nn.Module):
                 tt = torch.LongTensor([t] * x.shape[1]).to(x.device)
                 tt_prev = torch.LongTensor([t - 1] * x.shape[1]).to(x.device)
 
-                x_pred = self.sqrt_alphabar[None, tt, None] * x + self.sqrt_m_alphabar[None, tt, None] * 0
+                x_pred = self.sqrt_alphabar[None, tt, None] * x + self.sqrt_m_alphabar[None, tt, None] * 0 # Equation 3
                 inpt = torch.cat([x, x_pred], dim=-1)
                 eps_pred = self.model(inpt) if self.use_old_arch else self.model(inpt, tt_prev)
 
                 z = torch.randn_like(x).to(x.device) if t > 1 else 0
                 # tt = torch.LongTensor([t] * x.shape[1]).to(x.device)
                 # eps = self.model(x) if self.use_old_arch else self.model(x, tt)
-                x = self.oneover_sqrt_alpha[t] * (x - eps_pred * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t]
+                x = self.oneover_sqrt_alpha[t] * (x - eps_pred * self.malpha_over_sqrtmab[t]) + z * self.sqrt_beta[t] # Equation 5
         indices = self.emb_to_indices(x)
         tokens = [self.vocab.lookup_tokens(i.tolist()) for i in indices.T]
         return [" ".join(token) for token in tokens]
@@ -167,7 +172,7 @@ class TextDenoiser(nn.Module):
 
 
     def emb_to_indices(self, x):
-        return F.softmax(self.decoder(x), dim=-1).argmax(dim=-1)
+        return F.softmax(self.decoder(x), dim=-1).argmax(dim=-1) 
 
     def emb_to_tokens(self, x):
         indices = self.emb_to_indices(x)
@@ -178,6 +183,7 @@ class TextDenoiser(nn.Module):
 
     @staticmethod
     def load_from_training_log(log_dir, model_name, device):
+        """Method for loading a model from a training log to be used for sampling"""
         with open(f"{log_dir}/args.json", "r") as f:
             args = json.load(f)
             args = Namespace(**args)
@@ -210,6 +216,7 @@ class TextDenoiser(nn.Module):
         return denoiser
 
     def run_epoch(self, dataloader, device):
+        """Train one iteration of the dataloader"""
         self.train()
         losses = []
         noise_losses = []
@@ -233,7 +240,6 @@ class TextDenoiser(nn.Module):
     def cosine_similarity(self, x, y):
         return F.cosine_similarity(x, y, dim=-1)
 
-    # def load_from_training_session
             
 
 if __name__ == "__main__":
