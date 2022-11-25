@@ -32,17 +32,17 @@ class TextDenoiser(nn.Module):
         # Freeze embedding weights
         # self.embedder.weight.requires_grad = False
         # self.model = nn.Transformer(d_model=embed_dim, nhead=12, num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=3072, dropout=0.1, activation='gelu')s
+        use_self_cond = False
         if use_old_arch:
-            self.model = nn.Sequential(
-                nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim*2, nhead=nhead, dim_feedforward=dim_feedforward, dropout=0.1, activation='gelu'), num_layers=num_layers),
-                nn.Linear(embed_dim*2, embed_dim),
-                nn.GELU(),
-            )
+            # Text-Model
+            self.model = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=embed_dim, nhead=nhead, dim_feedforward=dim_feedforward, dropout=0.1, activation='gelu'), num_layers=num_layers)
         else:
+            # Strudel-Model
             self.model = DiffusionModel(embed_dim=embed_dim, d_model=d_model, dim_feedforward=dim_feedforward, nhead=nhead, num_layers=num_layers)
 
         self.decoder = nn.Linear(embed_dim, len(vocab))
-        # self.decoder.weight = nn.Parameter(self.embedder.weight)
+        self.decoder.weight = nn.Parameter(self.embedder.weight)
+        self.decoder.weight.requires_grad = True
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
 
@@ -52,6 +52,7 @@ class TextDenoiser(nn.Module):
         
         
     def _get_schedule(self, beta_start: float, beta_end: float, n_T: int):
+        """Return a linear variance schedule"""
         beta = torch.linspace(beta_start, beta_end, n_T + 1)
         sqrt_beta = torch.sqrt(beta)
         
@@ -74,15 +75,17 @@ class TextDenoiser(nn.Module):
         }
 
     def _load_schedule(self, schedule):
+        """Load variance schedule into the model"""
         for k, v in schedule.items():
             self.register_buffer(k, v)
 
     def noise(self, x, ts):
+        """Corrupt x with noise at timesteps ts"""
         eps = torch.randn_like(x).to(x.device)
         x_noised = self.sqrt_alphabar[None, ts, None] * x + self.sqrt_m_alphabar[None, ts, None] * eps
         return x_noised, eps
 
-    def forward_process_loss(self, x):
+    def forward_process_loss_self_cond(self, x):
         x_emb = self.embedder(x)
 
         ts = torch.randint(1, self.n_T, (x.shape[1],)).to(x.device) 
@@ -104,6 +107,19 @@ class TextDenoiser(nn.Module):
 
         # pred_eps = self.model(x_t) if self.use_old_arch else self.model(x_t, ts)
         # noise_loss = self.criterion(eps, pred_eps)
+
+        y = self.decoder(x_emb)
+        reconstruction_loss = F.cross_entropy(y.permute(1, 2, 0), x.T) # y shape: (seq_len, batch_size, vocab_size) -> (batch_size, vocab_size, seq_len), x shape: (seq_len, batch_size) -> (batch_size, seq_len)
+        loss = noise_loss + reconstruction_loss
+        return loss, {"noise_loss": noise_loss, "reconstruction_loss": reconstruction_loss}
+
+    def forward_process_loss(self, x):
+        x_emb = self.embedder(x)
+
+        ts = torch.randint(1, self.n_T, (x.shape[1],)).to(x.device) 
+        x_t, eps = self.noise(x_emb, ts)
+        pred_eps = self.model(x_t) if self.use_old_arch else self.model(x_t, ts)
+        noise_loss = self.criterion(eps, pred_eps)
 
         y = self.decoder(x_emb)
         reconstruction_loss = F.cross_entropy(y.permute(1, 2, 0), x.T) # y shape: (seq_len, batch_size, vocab_size) -> (batch_size, vocab_size, seq_len), x shape: (seq_len, batch_size) -> (batch_size, seq_len)

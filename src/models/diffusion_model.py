@@ -4,6 +4,10 @@ import torch.nn.functional as F
 
 
 class DiffusionModel(nn.Module):
+    """
+    Implementation of the Strudel-Model
+    Featuring timestep-encoding and embedding bottleneck
+    """
     def __init__(self, embed_dim=896, d_model=114, dim_feedforward=1024, nhead=12, num_layers=6, device="cuda" if torch.cuda.is_available() else "cpu"):
         super().__init__()
         self.device = device

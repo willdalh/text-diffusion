@@ -41,7 +41,7 @@ def run_training(args):
         if epoch % args.save_interval == 0 or epoch == args.epochs - 1 or epoch in [0, 1, 2, 3, 4, 5]:
             torch.save(text_denoiser.state_dict(), f"{args.log_dir}/models/saved_model.pt")
 
-            sentences = text_denoiser.sample_self_conditioned(device, 2, seq_len=args.seq_len)
+            sentences = text_denoiser.sample(device, 2, seq_len=args.seq_len)
             with open(f"{args.log_dir}/samples/samples.txt", "a", encoding="utf-8") as f:
                 f.write(f"Epoch {epoch}:\n")
                 for sentence in sentences:

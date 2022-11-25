@@ -11,6 +11,7 @@ from text_dataset import TextDataset
 
 
 def get_dataset_and_vocab(dataset_name, seq_len=32, line_slice=None):
+    """Returns a dataset and a vocab for the given dataset name"""
     print(dataset_name)
     if dataset_name == "wikitext2":
         dataset, vocab = get_wikitext2(seq_len, line_slice)
@@ -59,7 +60,7 @@ def get_jokes(seq_len, line_slice=None):
     return TextDataset(data, seq_len=seq_len), vocab
 
 def get_minimal(seq_len):
-    train_iter = ["This is a test", "This is another test", "This is a third test"]
+    train_iter = ["I am sentient and you are not", "The world we live in is a simulation"]
     tokenizer = ttdutils.get_tokenizer("basic_english")
     vocab = build_vocab_from_iterator(map(tokenizer, train_iter), specials=["<unk>"])
     vocab.set_default_index(vocab["<unk>"])

@@ -1,10 +1,12 @@
 import torch
 
 def text_collate_fn(batch):
+    """Combine batch list of tensors so that batch_size is the second dimension"""
     return torch.stack(batch, dim=1)
 
 
 def read_glove_vectors(glove_path, vocab, embed_dim):
+    """Read in GloVe embeddings for words in vocab"""
     covered_words = []
     embedding = torch.zeros(len(vocab), embed_dim)
     with open(glove_path, "r", encoding="utf-8") as f:

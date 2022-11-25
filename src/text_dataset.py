@@ -8,6 +8,7 @@ from torchtext.vocab import build_vocab_from_iterator
 import torchtext.data.utils as ttdutils
 
 class TextDataset(Dataset):
+    """Pytorch Dataset class extended for text data"""
     def __init__(self, data, seq_len=32):
         super(TextDataset, self).__init__()
         self.seq_len = seq_len
